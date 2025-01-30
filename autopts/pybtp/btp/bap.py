@@ -130,12 +130,14 @@ def bap_send(ase_id, data_ba, bd_addr_type=None, bd_addr=None):
 def bap_broadcast_source_setup(
         streams_per_subgroup, subgroups, coding_format, vid, cid,
         codec_ltvs, sdu_interval, framing, max_sdu, retransmission_number,
-        max_transport_latency, presentation_delay):
+        max_transport_latency, presentation_delay, broadcast_id):
 
     logging.debug(f"{bap_broadcast_source_setup.__name__}")
 
     iutctl = get_iut()
     data = bytearray()
+    data += struct.pack('B', 0)
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     data += struct.pack('B', streams_per_subgroup)
     data += struct.pack('B', subgroups)
 
@@ -171,7 +173,7 @@ def bap_broadcast_source_release(broadcast_id):
 
     iutctl = get_iut()
     data = bytearray()
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
 
     iutctl.btp_socket.send(*BAP['broadcast_source_release'], data=data)
 
@@ -183,7 +185,7 @@ def bap_broadcast_adv_start(broadcast_id):
 
     iutctl = get_iut()
     data = bytearray()
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     iutctl.btp_socket.send(*BAP['broadcast_adv_start'], data=data)
 
     bap_command_rsp_succ()
@@ -194,7 +196,7 @@ def bap_broadcast_adv_stop(broadcast_id):
 
     iutctl = get_iut()
     data = bytearray()
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     iutctl.btp_socket.send(*BAP['broadcast_adv_stop'], data=data)
 
     bap_command_rsp_succ()
@@ -205,7 +207,7 @@ def bap_broadcast_source_start(broadcast_id):
 
     iutctl = get_iut()
     data = bytearray()
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     iutctl.btp_socket.send(*BAP['broadcast_source_start'], data=data)
 
     bap_command_rsp_succ()
@@ -216,7 +218,7 @@ def bap_broadcast_source_stop(broadcast_id):
 
     iutctl = get_iut()
     data = bytearray()
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     iutctl.btp_socket.send(*BAP['broadcast_source_stop'], data=data)
 
     bap_command_rsp_succ()
@@ -266,7 +268,7 @@ def bap_broadcast_sink_sync(broadcast_id, advertiser_sid, skip, sync_timeout,
     iutctl = get_iut()
 
     data = address_to_ba(bd_addr_type, bd_addr)
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     data += struct.pack('B', advertiser_sid)
     data += struct.pack('<H', skip)
     data += struct.pack('<H', sync_timeout)
@@ -284,7 +286,7 @@ def bap_broadcast_sink_stop(broadcast_id, bd_addr_type=None, bd_addr=None):
     iutctl = get_iut()
 
     data = address_to_ba(bd_addr_type, bd_addr)
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
 
     iutctl.btp_socket.send(*BAP['broadcast_sink_stop'], data=data)
 
@@ -298,7 +300,7 @@ def bap_broadcast_sink_bis_sync(broadcast_id, requested_bis_sync,
     iutctl = get_iut()
 
     data = address_to_ba(bd_addr_type, bd_addr)
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     data += struct.pack('<I', requested_bis_sync)
 
     iutctl.btp_socket.send(*BAP['broadcast_sink_bis_sync'], data=data)
@@ -353,7 +355,7 @@ def bap_add_broadcast_src(advertiser_sid, broadcast_id, pa_sync,
     data = address_to_ba(bd_addr_type, bd_addr)
     data += address_to_ba(broadcaster_addr_type, broadcaster_addr)
     data += struct.pack('B', advertiser_sid)
-    data += int.to_bytes(broadcast_id, 3, 'little')
+    data += int.to_bytes(broadcast_id, defs.BTP_BAP_BROADCAST_ID_BYTES, 'little')
     data += struct.pack('B', pa_sync)
     data += struct.pack('<H', pa_interval)
     data += struct.pack('B', num_subgroups)

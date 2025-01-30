@@ -5055,6 +5055,12 @@
             <Value>000000000000</Value>
           </Row>
           <Row>
+            <Name>TSPX_bd_addr_iut_2</Name>
+            <Description>The unique 48-bit Bluetooth device address (BD_ADDR) of the IUT under test BAP/BSRC/SCC/BV-38-C. This was filled in during workspace creation.</Description>
+            <Type>OCTETSTRING</Type>
+            <Value>000000000000</Value>
+          </Row>
+          <Row>
             <Name>TSPX_Public_bd_addr_LT2</Name>
             <Description>The public BD Address of the Lower Tester 2. Default: 000000000000)</Description>
             <Type>OCTETSTRING</Type>
@@ -5459,13 +5465,13 @@
             <Name>TSPX_Broadcast_ID</Name>
             <Description>Broadcast ID. When this value is used, PTS will search for the matching device. If it is non-zero value, it will search by Bluetooth address</Description>
             <Type>INTEGER</Type>
-            <Value>0</Value>
+            <Value>123456</Value>
           </Row>
           <Row>
             <Name>TSPX_Broadcast_ID_2</Name>
             <Description>Second Broadcast ID. This is only used for BAP/BSRC/SCC/BV-38-C test case</Description>
             <Type>INTEGER</Type>
-            <Value>0</Value>
+            <Value>234567</Value>
           </Row>
           <Row>
             <Name>TSPX_Connection_Interval</Name>

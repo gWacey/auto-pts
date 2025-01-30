@@ -240,6 +240,7 @@ def hdl_wid_114(params: WIDParams):
         'BAP/BSRC/SCC/BV-30-C': '48_4_2',
         'BAP/BSRC/SCC/BV-31-C': '48_5_2',
         'BAP/BSRC/SCC/BV-32-C': '48_6_2',
+        'BAP/BSRC/SCC/BV-38-C': '8_1_1',
         # Cases with 1 BIS:
         'BAP/BSRC/STR/BV-01-C': '8_1_1',
         'BAP/BSRC/STR/BV-02-C': '8_2_1',
@@ -256,7 +257,7 @@ def hdl_wid_114(params: WIDParams):
         'BAP/BSRC/STR/BV-13-C': '48_3_1',
         'BAP/BSRC/STR/BV-14-C': '48_4_1',
         'BAP/BSRC/STR/BV-15-C': '48_5_1',
-        'BAP/BSRC/STR/BV-16-C': '48_6_1',
+        'BAP/BSRC/STR/BV-16-C': '8_1_1',
         # Cases with 2 BISes:
         'BAP/BSRC/STR/BV-18-C': '8_1_1',
         'BAP/BSRC/STR/BV-19-C': '8_2_1',
@@ -276,6 +277,10 @@ def hdl_wid_114(params: WIDParams):
         'BAP/BSRC/STR/BV-33-C': '48_6_1',
     }
 
+    broadcast_ids = [123456]
+    if params.test_case_name == 'BAP/BSRC/SCC/BV-38-C':
+        broadcast_ids.append(234567)
+
     if params.test_case_name in configurations:
         qos_set_name = configurations[params.test_case_name]
         coding_format = 0x06
@@ -287,43 +292,47 @@ def hdl_wid_114(params: WIDParams):
         vid = 0xffff
         cid = 0xffff
 
-    codec_set_name, *qos_config = BAS_CONFIG_SETTINGS[qos_set_name]
+    source_id = 0
+    
+    for broadcast_id in broadcast_ids:
+        codec_set_name, *qos_config = BAS_CONFIG_SETTINGS[qos_set_name]
 
-    (sampling_freq, frame_duration, octets_per_frame) = \
-        CODEC_CONFIG_SETTINGS[codec_set_name]
-    audio_locations = 0x01
-    frames_per_sdu = 0x01
+        (sampling_freq, frame_duration, octets_per_frame) = \
+            CODEC_CONFIG_SETTINGS[codec_set_name]
+        audio_locations = 0x01
+        frames_per_sdu = 0x01
 
-    codec_ltvs_bytes = create_lc3_ltvs_bytes(sampling_freq, frame_duration,
-                                             audio_locations, octets_per_frame,
-                                             frames_per_sdu)
+        codec_ltvs_bytes = create_lc3_ltvs_bytes(sampling_freq, frame_duration,
+                                                 audio_locations, octets_per_frame,
+                                                 frames_per_sdu)
 
-    streams_per_subgroup = 1
-    tc_num = int(re.findall(r'\d+', params.test_case_name)[0])
-    if tc_num >= 18:
-        streams_per_subgroup = 2
+        streams_per_subgroup = 1
+        tc_num = int(re.findall(r'\d+', params.test_case_name)[0])
+        if tc_num >= 18:
+            streams_per_subgroup = 2
 
-    presentation_delay = 40000
-    subgroups = 1
-    broadcast_id = btp.bap_broadcast_source_setup(
-        streams_per_subgroup, subgroups, coding_format, vid, cid,
-        codec_ltvs_bytes, *qos_config, presentation_delay)
+        presentation_delay = 40000
+        subgroups = 1
 
-    stack = get_stack()
-    stack.bap.broadcast_id = broadcast_id
+        broadcast_id = btp.bap_broadcast_source_setup(
+            streams_per_subgroup, subgroups, coding_format, vid, cid,
+            codec_ltvs_bytes, *qos_config, presentation_delay, broadcast_id)
 
-    btp.bap_broadcast_adv_start(broadcast_id)
+        stack = get_stack()
+        stack.bap.broadcast_id = broadcast_id
 
-    btp.bap_broadcast_source_start(broadcast_id)
+        btp.bap_broadcast_adv_start(broadcast_id)
 
-    data = bytearray([j for j in range(0, 41)])
+        btp.bap_broadcast_source_start(broadcast_id)
 
-    for i in range(1, 100):
-        try:
-            btp.bap_send(0, data)
-        except BTPError:
-            # Buffer full
-            pass
+        data = bytearray([j for j in range(0, 41)])
+
+        for i in range(1, 100):
+            try:
+                btp.bap_send(0, data)
+            except BTPError:
+                # Buffer full
+                pass
 
     return True
 
@@ -2015,12 +2024,13 @@ def hdl_wid_380(_: WIDParams):
                                              audio_locations, octets_per_frame,
                                              frames_per_sdu)
 
+    broadcast_id = int(123456)
     presentation_delay = 40000
     streams_per_subgroup = 2
     subgroups = 1
     broadcast_id = btp.bap_broadcast_source_setup(
         streams_per_subgroup, subgroups, coding_format, vid, cid,
-        codec_ltvs_bytes, *qos_config, presentation_delay)
+        codec_ltvs_bytes, *qos_config, presentation_delay, broadcast_id)
 
     stack.bap.broadcast_id = broadcast_id
 

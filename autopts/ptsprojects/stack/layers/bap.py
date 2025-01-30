@@ -26,6 +26,7 @@ class BAP:
         self.peers = {}
         self.ase_configs = []
         self.broadcast_id = 0x1000000  # Invalid Broadcast ID
+        self.broadcast_id_2 = 0x1000000  # Invalid Broadcast ID 2
         self.broadcast_code = ''
         self.event_queues = {
             defs.BTP_BAP_EV_DISCOVERY_COMPLETED: [],

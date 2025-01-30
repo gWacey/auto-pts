@@ -114,6 +114,9 @@ def test_cases(ptses):
                       TestFunc(lambda: pts.update_pixit_param(
                           "BAP", "TSPX_bd_addr_iut",
                           stack.gap.iut_addr_get_str())),
+                      TestFunc(lambda: pts.update_pixit_param(
+                          "BAP", "TSPX_bd_addr_iut_2",
+                          stack.gap.iut_addr_get_str())),
                       TestFunc(btp.core_reg_svc_gatt),
                       TestFunc(btp.set_pts_addr, pts_bd_addr, Addr.le_public),
                       TestFunc(stack.gatt_init),

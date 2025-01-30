@@ -1313,11 +1313,11 @@ def check_scan_rep_and_rsp(report, response):
     return False
 
 
-def gap_padv_configure(include_tx_power, intvl_min, intvl_max):
+def gap_padv_configure(id, include_tx_power, intvl_min, intvl_max):
     logging.debug("%s", gap_padv_configure.__name__)
 
     iutctl = get_iut()
-    data_ba = bytearray(struct.pack("<BHH", include_tx_power,
+    data_ba = bytearray(struct.pack("<BHH", id, include_tx_power,
                                     intvl_min, intvl_max))
 
     iutctl.btp_socket.send(*GAP['padv_configure'], data=data_ba)
@@ -1338,7 +1338,7 @@ def gap_padv_start(flags=0):
     __gap_current_settings_update(tuple_data)
 
 
-def gap_padv_set_data(data):
+def gap_padv_set_data(id, data):
     logging.debug("%s", gap_padv_set_data.__name__)
 
     iutctl = get_iut()
@@ -1346,7 +1346,7 @@ def gap_padv_set_data(data):
     if isinstance(data, str):
         data = data.encode()
 
-    data_ba = bytearray(struct.pack("<H%ds" % len(data), len(data), data))
+    data_ba = bytearray(struct.pack("<H%ds" % len(data), len(data), id, data))
 
     iutctl.btp_socket.send(*GAP['padv_set_data'], data=data_ba)
 

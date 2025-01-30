@@ -159,7 +159,7 @@ def hdl_wid_114(params: WIDParams):
                                             codec_ltvs_bytes, metadata)
 
     # Zephyr stack generates Broadcast_ID itself
-    broadcast_id = 0x123456
+    broadcast_id = int(123456)
     btp.cap_broadcast_source_setup(source_id, broadcast_id, *qos_config, presentation_delay,
                                    encryption=False, broadcast_code=None,
                                    subgroup_codec_level=False)

@@ -1307,9 +1307,9 @@ def hdl_wid_267(_: WIDParams):
 def hdl_wid_300(_: WIDParams):
     # Please send non connectable advertise with periodic info.
     stack = get_stack()
-    btp.gap_padv_configure(1, 150, 200)
+    btp.gap_padv_configure(0, 1, 150, 200)
     if stack.gap.periodic_data:
-        btp.gap_padv_set_data((chr(len(stack.gap.periodic_data[1]) + 1) +
+        btp.gap_padv_set_data(0, (chr(len(stack.gap.periodic_data[1]) + 1) +
                                chr(stack.gap.periodic_data[0]) +
                                stack.gap.periodic_data[1]).encode())
     btp.gap_padv_start()
@@ -1349,9 +1349,9 @@ def hdl_wid_305(_: WIDParams):
     # Please enter Periodic Advertising Synchronizability mode,
     # and then perform Periodic Advertising Synchronization Transfer Procedure
     stack = get_stack()
-    btp.gap_padv_configure(1, 150, 200)
+    btp.gap_padv_configure(0, 1, 150, 200)
     if stack.gap.periodic_data:
-        btp.gap_padv_set_data((chr(len(stack.gap.periodic_data[1]) + 1) +
+        btp.gap_padv_set_data((0, chr(len(stack.gap.periodic_data[1]) + 1) +
                                chr(stack.gap.periodic_data[0]) +
                                stack.gap.periodic_data[1]).encode())
     btp.gap_padv_start()

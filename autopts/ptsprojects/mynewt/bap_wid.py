@@ -54,12 +54,13 @@ def hdl_wid_380(_: WIDParams):
                                              audio_locations, octets_per_frame,
                                              frames_per_sdu)
 
+    broadcast_id = int(123456)
     presentation_delay = 40000
     streams_per_subgroup = 2
     subgroups = 1
     broadcast_id = btp.bap_broadcast_source_setup(
         streams_per_subgroup, subgroups, coding_format, vid, cid,
-        codec_ltvs_bytes, *qos_config, presentation_delay)
+        codec_ltvs_bytes, *qos_config, presentation_delay, broadcast_id)
 
     stack.bap.broadcast_id = broadcast_id
 
@@ -67,4 +68,3 @@ def hdl_wid_380(_: WIDParams):
     btp.bap_broadcast_source_start(broadcast_id)
 
     return True
-
